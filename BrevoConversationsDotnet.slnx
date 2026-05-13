@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/Nexin.Brevo.Conversations.SampleApi/Nexin.Brevo.Conversations.SampleApi.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Nexin.Brevo.Conversations/Nexin.Brevo.Conversations.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Nexin.Brevo.Conversations.Tests/Nexin.Brevo.Conversations.Tests.csproj" />
+  </Folder>
+</Solution>
