@@ -1,6 +1,50 @@
-@Nexin.Brevo.Conversations.SampleApi_HostAddress = http://localhost:5152
+@Abdul.Brevo.Conversations.SampleApi_HostAddress = http://localhost:5152
 
-GET {{Nexin.Brevo.Conversations.SampleApi_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{Abdul.Brevo.Conversations.SampleApi_HostAddress}}/messages
+Content-Type: application/json
 
-###
+{
+  "visitorId": "visitor-1",
+  "text": "Hello from Abdul API!",
+  "agentEmail": "[EMAIL_ADDRESS]",
+  "agentName": "Abdul Bot",
+  "receivedFrom": "AbdulSupport"
+}
+
+### Create a new message
+POST {{Abdul.Brevo.Conversations.SampleApi_HostAddress}}/messages
+Content-Type: application/json
+
+{
+  "visitorId": "visitor-1",
+  "text": "Hello from Abdul API!",
+  "agentEmail": "[EMAIL_ADDRESS]",
+  "agentName": "Abdul Bot",
+  "receivedFrom": "AbdulSupport"
+}
+
+### Update a message
+
+PUT {{Abdul.Brevo.Conversations.SampleApi_HostAddress}}/messages
+Content-Type: application/json
+
+{
+  "visitorId": "visitor-1",
+  "text": "Updated: Hello from Abdul API!",
+  "agentEmail": "[EMAIL_ADDRESS]",
+  "agentName": "Abdul Bot",
+  "receivedFrom": "AbdulSupport"
+}
+
+### Delete a message
+
+DELETE {{Abdul.Brevo.Conversations.SampleApi_HostAddress}}/messages
+Content-Type: application/json
+
+{
+  "visitorId": "visitor-1",
+  "text": "Deleted: Hello from Abdul API!",
+  "agentEmail": "[EMAIL_ADDRESS]",
+  "agentName": "Abdul Bot",
+  "receivedFrom": "AbdulSupport"
+}

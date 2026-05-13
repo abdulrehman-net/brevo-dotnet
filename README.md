@@ -58,3 +58,24 @@ public class SupportMessageService
     }
 }
 ```
+
+## Samples
+
+You can find a complete sample ASP.NET Core Minimal API demonstrating all SDK features in the `samples/Abdul.Brevo.Conversations.SampleApi` directory.
+
+To run the sample:
+
+1. Update the `BrevoConversations:ApiKey` in `samples/Abdul.Brevo.Conversations.SampleApi/appsettings.json`.
+2. Navigate to the sample directory:
+   ```bash
+   cd samples/Abdul.Brevo.Conversations.SampleApi
+   ```
+3. Run the application:
+   ```bash
+   dotnet run
+   ```
+4. Open the OpenAPI (Swagger) UI to test the endpoints.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

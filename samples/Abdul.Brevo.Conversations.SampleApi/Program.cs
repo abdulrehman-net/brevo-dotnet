@@ -1,12 +1,16 @@
+using Abdul.Brevo.Conversations;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Register Brevo Conversations SDK
+builder.Services.AddBrevoConversations(builder.Configuration);
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -14,28 +18,115 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// --- Agent Messages API Samples ---
 
-app.MapGet("/weatherforecast", () =>
+var messages = app.MapGroup("/messages").WithTags("Agent Messages");
+
+messages.MapPost("/", async (
+    [FromBody] SendBrevoAgentMessageRequest request,
+    [FromServices] IBrevoConversationMessagesClient client) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    var result = await client.SendAgentMessageAsync(request);
+    return Results.Ok(result);
 })
-.WithName("GetWeatherForecast");
+.WithName("SendAgentMessage");
+
+messages.MapGet("/{id}", async (
+    string id,
+    [FromServices] IBrevoConversationMessagesClient client) =>
+{
+    var result = await client.GetMessageAsync(id);
+    return Results.Ok(result);
+})
+.WithName("GetAgentMessage");
+
+messages.MapPut("/{id}", async (
+    string id,
+    [FromBody] UpdateBrevoMessageRequest request,
+    [FromServices] IBrevoConversationMessagesClient client) =>
+{
+    var result = await client.UpdateAgentMessageAsync(id, request);
+    return Results.Ok(result);
+})
+.WithName("UpdateAgentMessage");
+
+messages.MapDelete("/{id}", async (
+    string id,
+    [FromServices] IBrevoConversationMessagesClient client) =>
+{
+    await client.DeleteAgentMessageAsync(id);
+    return Results.NoContent();
+})
+.WithName("DeleteAgentMessage");
+
+
+// --- Automated Messages API Samples ---
+
+var automated = app.MapGroup("/automated-messages").WithTags("Automated Messages");
+
+automated.MapPost("/", async (
+    [FromBody] SendBrevoAutomatedMessageRequest request,
+    [FromServices] IBrevoAutomatedMessagesClient client) =>
+{
+    var result = await client.SendAutomatedMessageAsync(request);
+    return Results.Ok(result);
+})
+.WithName("SendAutomatedMessage");
+
+automated.MapGet("/{id}", async (
+    string id,
+    [FromServices] IBrevoAutomatedMessagesClient client) =>
+{
+    var result = await client.GetAutomatedMessageAsync(id);
+    return Results.Ok(result);
+})
+.WithName("GetAutomatedMessage");
+
+automated.MapPut("/{id}", async (
+    string id,
+    [FromBody] UpdateBrevoMessageRequest request,
+    [FromServices] IBrevoAutomatedMessagesClient client) =>
+{
+    var result = await client.UpdateAutomatedMessageAsync(id, request);
+    return Results.Ok(result);
+})
+.WithName("UpdateAutomatedMessage");
+
+automated.MapDelete("/{id}", async (
+    string id,
+    [FromServices] IBrevoAutomatedMessagesClient client) =>
+{
+    await client.DeleteAutomatedMessageAsync(id);
+    return Results.NoContent();
+})
+.WithName("DeleteAutomatedMessage");
+
+
+// --- Agent Status API Samples ---
+
+var status = app.MapGroup("/status").WithTags("Agent Status");
+
+status.MapPost("/online", async (
+    [FromBody] SetBrevoAgentOnlineRequest request,
+    [FromServices] IBrevoConversationStatusClient client) =>
+{
+    await client.SetAgentOnlineAsync(request);
+    return Results.Accepted();
+})
+.WithName("SetAgentOnline");
+
+
+// --- Visitor Groups API Samples ---
+
+var visitors = app.MapGroup("/visitors").WithTags("Visitor Groups");
+
+visitors.MapPut("/group", async (
+    [FromBody] SetBrevoVisitorGroupRequest request,
+    [FromServices] IBrevoConversationVisitorsClient client) =>
+{
+    var result = await client.SetVisitorGroupAsync(request);
+    return Results.Ok(result);
+})
+.WithName("SetVisitorGroup");
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
