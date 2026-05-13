@@ -29,7 +29,7 @@ public class BrevoConversationsHttpClientTests
 
         // Assert
         var exception = await act.Should().ThrowAsync<BrevoConversationsApiException>();
-        exception.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        exception.Which.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         exception.Which.ResponseBody.Should().Be("{\"error\": \"bad request\"}");
     }
 
@@ -45,7 +45,7 @@ public class BrevoConversationsHttpClientTests
 
         // Assert
         var exception = await act.Should().ThrowAsync<BrevoConversationsApiException>();
-        exception.Which.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        exception.Which.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class BrevoConversationsHttpClientTests
 
         // Assert
         var exception = await act.Should().ThrowAsync<BrevoConversationsApiException>();
-        exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        exception.Which.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class BrevoConversationsHttpClientTests
 
         // Assert
         var exception = await act.Should().ThrowAsync<BrevoConversationsApiException>();
-        exception.Which.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        exception.Which.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class BrevoConversationsHttpClientTests
 
         // Assert
         var exception = await act.Should().ThrowAsync<BrevoConversationsApiException>();
-        exception.Which.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        exception.Which.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
     }
 
     [Fact]
@@ -105,6 +105,61 @@ public class BrevoConversationsHttpClientTests
 
         // Assert
         var exception = await act.Should().ThrowAsync<BrevoConversationsApiException>();
-        exception.Which.StatusCode.Should().Be(HttpStatusCode.OK);
+        exception.Which.StatusCode.Should().Be((int)HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task SendAsync_WhenPaymentRequired_ThrowsPaymentRequiredException()
+    {
+        // Arrange
+        var handlerMock = HttpMessageHandlerMock.Setup(
+            HttpStatusCode.PaymentRequired,
+            stringContent: "{\"code\":\"not_enough_credits\",\"message\":\"Upgrade your plan to use REST API\"}");
+        var client = CreateClient(handlerMock);
+
+        // Act
+        var act = () => client.GetAsync<object>("/test");
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<BrevoConversationsPaymentRequiredException>();
+        exception.Which.StatusCode.Should().Be(402);
+        exception.Which.BrevoCode.Should().Be("not_enough_credits");
+        exception.Which.Message.Should().Be("Upgrade your plan to use REST API");
+    }
+
+    [Fact]
+    public async Task PostNoContentAsync_WhenPaymentRequired_ThrowsPaymentRequiredException()
+    {
+        // Arrange
+        var handlerMock = HttpMessageHandlerMock.Setup(
+            HttpStatusCode.PaymentRequired,
+            stringContent: "{\"code\":\"not_enough_credits\",\"message\":\"Upgrade your plan to use REST API\"}");
+        var client = CreateClient(handlerMock);
+
+        // Act
+        var act = () => client.PostNoContentAsync("/test", new { });
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<BrevoConversationsPaymentRequiredException>();
+        exception.Which.StatusCode.Should().Be(402);
+        exception.Which.BrevoCode.Should().Be("not_enough_credits");
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WhenPaymentRequired_ThrowsPaymentRequiredException()
+    {
+        // Arrange
+        var handlerMock = HttpMessageHandlerMock.Setup(
+            HttpStatusCode.PaymentRequired,
+            stringContent: "{\"code\":\"not_enough_credits\",\"message\":\"Upgrade your plan to use REST API\"}");
+        var client = CreateClient(handlerMock);
+
+        // Act
+        var act = () => client.DeleteAsync("/test");
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<BrevoConversationsPaymentRequiredException>();
+        exception.Which.StatusCode.Should().Be(402);
+        exception.Which.BrevoCode.Should().Be("not_enough_credits");
     }
 }

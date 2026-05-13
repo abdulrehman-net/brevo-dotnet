@@ -145,6 +145,42 @@ To run a sample:
 └── Abdul.Brevo.slnx                   # Solution file
 ```
 
+## Conversations REST API Access
+
+Brevo may restrict Conversations REST API access depending on your account plan, enabled features, credits, or billing status.
+
+If Brevo returns:
+
+```json
+{
+  "code": "not_enough_credits",
+  "message": "Upgrade your plan to use REST API"
+}
+```
+
+`Abdul.Brevo.Conversations` throws:
+
+```csharp
+BrevoConversationsPaymentRequiredException
+```
+
+This means the SDK request was formed correctly, but the Brevo account does not currently have access to that REST API operation. Catch and handle it like this:
+
+```csharp
+try
+{
+    var result = await messages.SendAgentMessageAsync(request);
+}
+catch (BrevoConversationsPaymentRequiredException ex)
+{
+    // ex.BrevoCode  → "not_enough_credits"
+    // ex.Message    → "Upgrade your plan to use REST API"
+    // ex.StatusCode → 402
+}
+```
+
+> **Note:** This is not a package bug. Some Conversations REST API operations require the appropriate Brevo plan, enabled feature access, or available credits.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

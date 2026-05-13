@@ -2,21 +2,43 @@ using System.Net;
 
 namespace Abdul.Brevo.Conversations;
 
-public sealed class BrevoConversationsApiException : Exception
+/// <summary>
+/// Thrown when a Brevo Conversations API request fails.
+/// </summary>
+public class BrevoConversationsApiException : Exception
 {
-    public HttpStatusCode StatusCode { get; }
+    /// <summary>Gets the HTTP status code returned by Brevo.</summary>
+    public int StatusCode { get; }
+
+    /// <summary>Gets the HTTP reason phrase returned by Brevo.</summary>
+    public string? ReasonPhrase { get; }
+
+    /// <summary>Gets the raw response body returned by Brevo.</summary>
     public string? ResponseBody { get; }
 
     public BrevoConversationsApiException(
-        HttpStatusCode statusCode,
+        int statusCode,
+        string? reasonPhrase,
+        string message,
         string? responseBody)
-        : base(GetErrorMessage(statusCode, responseBody))
+        : base(message)
     {
         StatusCode = statusCode;
+        ReasonPhrase = reasonPhrase;
         ResponseBody = responseBody;
     }
 
-    private static string GetErrorMessage(HttpStatusCode statusCode, string? responseBody)
+    internal BrevoConversationsApiException(
+        HttpStatusCode statusCode,
+        string? responseBody)
+        : base(GetLegacyErrorMessage(statusCode, responseBody))
+    {
+        StatusCode = (int)statusCode;
+        ReasonPhrase = statusCode.ToString();
+        ResponseBody = responseBody;
+    }
+
+    private static string GetLegacyErrorMessage(HttpStatusCode statusCode, string? responseBody)
     {
         var baseMessage = $"Brevo Conversations API request failed with status code {(int)statusCode} ({statusCode}).";
 
@@ -35,3 +57,4 @@ public sealed class BrevoConversationsApiException : Exception
             : $"{baseMessage}{hint}";
     }
 }
+

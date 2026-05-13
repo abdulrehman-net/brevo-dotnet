@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -67,12 +68,9 @@ internal sealed class BrevoConversationsHttpClient
         request.Content = JsonContent.Create(body, options: JsonOptions);
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
+        var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-            throw new BrevoConversationsApiException(response.StatusCode, responseBody);
-        }
+        await ThrowIfFailedAsync(response, responseBody);
     }
 
     public async Task DeleteAsync(
@@ -82,12 +80,9 @@ internal sealed class BrevoConversationsHttpClient
         using var request = CreateRequest(HttpMethod.Delete, path);
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
+        var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-            throw new BrevoConversationsApiException(response.StatusCode, responseBody);
-        }
+        await ThrowIfFailedAsync(response, responseBody);
     }
 
     private async Task<TResponse> SendAsync<TRequest, TResponse>(
@@ -102,15 +97,55 @@ internal sealed class BrevoConversationsHttpClient
             request.Content = JsonContent.Create(body, options: JsonOptions);
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
-
         var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-            throw new BrevoConversationsApiException(response.StatusCode, responseBody);
+        await ThrowIfFailedAsync(response, responseBody);
 
         var result = JsonSerializer.Deserialize<TResponse>(responseBody, JsonOptions);
 
-        return result ?? throw new BrevoConversationsApiException(response.StatusCode, responseBody);
+        return result
+               ?? throw new BrevoConversationsApiException(
+                   statusCode: (int)response.StatusCode,
+                   reasonPhrase: response.ReasonPhrase,
+                   message: "Brevo returned an empty or invalid response body.",
+                   responseBody: responseBody);
+    }
+
+    private static Task ThrowIfFailedAsync(
+        HttpResponseMessage response,
+        string responseBody)
+    {
+        if (response.IsSuccessStatusCode)
+            return Task.CompletedTask;
+
+        BrevoErrorResponse? brevoError = null;
+
+        try
+        {
+            brevoError = JsonSerializer.Deserialize<BrevoErrorResponse>(
+                responseBody,
+                JsonOptions);
+        }
+        catch
+        {
+            // Ignore invalid/non-JSON error bodies.
+        }
+
+        if (response.StatusCode == HttpStatusCode.PaymentRequired)
+        {
+            throw new BrevoConversationsPaymentRequiredException(
+                message: brevoError?.Message
+                         ?? "Brevo returned 402 Payment Required. The Conversations REST API may require a paid plan, enabled feature access, or available credits.",
+                brevoCode: brevoError?.Code,
+                responseBody: responseBody);
+        }
+
+        throw new BrevoConversationsApiException(
+            statusCode: (int)response.StatusCode,
+            reasonPhrase: response.ReasonPhrase,
+            message: brevoError?.Message
+                     ?? $"Brevo Conversations API request failed with status code {(int)response.StatusCode}.",
+            responseBody: responseBody);
     }
 
     private HttpRequestMessage CreateRequest(HttpMethod method, string path)
@@ -123,3 +158,4 @@ internal sealed class BrevoConversationsHttpClient
         return request;
     }
 }
+
