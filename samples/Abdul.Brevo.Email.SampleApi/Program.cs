@@ -5,8 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register Brevo Email SDK
-builder.Services.AddBrevoEmail(builder.Configuration);
+// Register Brevo Email SDK (reads from shared "Brevo" config section)
+var brevoSection = builder.Configuration.GetSection("Brevo");
+builder.Services.AddBrevoEmail(options =>
+{
+    options.ApiKey = brevoSection["ApiKey"] ?? string.Empty;
+    options.BaseUrl = brevoSection["BaseUrl"] ?? options.BaseUrl;
+});
 
 builder.Services.AddOpenApi();
 

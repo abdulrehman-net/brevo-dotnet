@@ -4,8 +4,13 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register Brevo Conversations SDK
-builder.Services.AddBrevoConversations(builder.Configuration);
+// Register Brevo Conversations SDK (reads from shared "Brevo" config section)
+var brevoSection = builder.Configuration.GetSection("Brevo");
+builder.Services.AddBrevoConversations(options =>
+{
+    options.ApiKey = brevoSection["ApiKey"] ?? string.Empty;
+    options.BaseUrl = brevoSection["BaseUrl"] ?? options.BaseUrl;
+});
 
 builder.Services.AddOpenApi();
 
