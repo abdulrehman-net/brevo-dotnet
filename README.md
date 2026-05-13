@@ -1,11 +1,15 @@
-# Abdul.Brevo.Conversations
+# Abdul.Brevo — .NET SDKs for Brevo
 
-A lightweight .NET SDK for Brevo Conversations REST API and webhook payloads.
+A collection of lightweight .NET SDKs for Brevo APIs, built for developers who want simple, dependency-injection friendly access without manually writing HttpClient code.
 
-Built for developers who want simple, dependency-injection friendly access to Brevo Conversations without manually writing HttpClient code for every endpoint.
+| Package | NuGet | Description |
+|---------|-------|-------------|
+| **Abdul.Brevo.Conversations** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Conversations)](https://www.nuget.org/packages/Abdul.Brevo.Conversations) | Brevo Conversations (live chat) REST API |
+| **Abdul.Brevo.Email** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Email)](https://www.nuget.org/packages/Abdul.Brevo.Email) | Brevo Transactional Email API v3 |
 
 ## Features
 
+### Abdul.Brevo.Conversations
 - Send messages as an agent
 - Get, update, and delete agent messages
 - Send automated pushed messages to visitors
@@ -13,18 +17,35 @@ Built for developers who want simple, dependency-injection friendly access to Br
 - Set agent online status
 - Assign visitors to groups
 - Strongly typed webhook payload models
+
+### Abdul.Brevo.Email
+- Send transactional emails (inline HTML or template)
+- Batch send with message versions
+- Schedule emails for future delivery
+- List and retrieve sent email content
+- Manage scheduled emails
+- Delete hard bounces
+- Strongly typed webhook payload models
+
+### Shared
 - ASP.NET Core dependency injection support
 - .NET 8 and .NET 10 support
+- Unified versioning across all packages
+- Central NuGet package management
 
 ## Installation
 
 ```bash
+# Conversations SDK
 dotnet add package Abdul.Brevo.Conversations
+
+# Email SDK
+dotnet add package Abdul.Brevo.Email
 ```
 
 ## Quick Start
 
-Configure the SDK in your `Program.cs` or `Startup.cs`:
+### Conversations
 
 ```csharp
 builder.Services.AddBrevoConversations(options =>
@@ -32,8 +53,6 @@ builder.Services.AddBrevoConversations(options =>
     options.ApiKey = builder.Configuration["Brevo:ApiKey"]!;
 });
 ```
-
-Inject and use the clients:
 
 ```csharp
 public class SupportMessageService
@@ -51,30 +70,80 @@ public class SupportMessageService
         {
             VisitorId = visitorId,
             Text = message,
-            AgentEmail = "support@Abdulit.com",
-            AgentName = "Abdul Support",
-            ReceivedFrom = "AbdulHelpdesk"
+            AgentEmail = "support@example.com",
+            AgentName = "Support",
+            ReceivedFrom = "Helpdesk"
         });
+    }
+}
+```
+
+### Email
+
+```csharp
+builder.Services.AddBrevoEmail(options =>
+{
+    options.ApiKey = builder.Configuration["Brevo:ApiKey"]!;
+});
+```
+
+```csharp
+public class NotificationService
+{
+    private readonly IBrevoTransactionalEmailClient _email;
+
+    public NotificationService(IBrevoTransactionalEmailClient email)
+    {
+        _email = email;
+    }
+
+    public async Task SendWelcomeEmailAsync(string recipientEmail, string name)
+    {
+        var result = await _email.SendAsync(new SendTransactionalEmailRequest
+        {
+            Sender = new EmailSender { Email = "hello@example.com", Name = "My App" },
+            To = [new EmailRecipient { Email = recipientEmail, Name = name }],
+            Subject = $"Welcome, {name}!",
+            HtmlContent = $"<h1>Welcome aboard, {name}!</h1><p>We're glad to have you.</p>"
+        });
+
+        Console.WriteLine($"Sent! MessageId: {result.MessageId}");
     }
 }
 ```
 
 ## Samples
 
-You can find a complete sample ASP.NET Core Minimal API demonstrating all SDK features in the `samples/Abdul.Brevo.Conversations.SampleApi` directory.
+Complete sample ASP.NET Core Minimal APIs are available:
 
-To run the sample:
+- **Conversations**: `samples/Abdul.Brevo.Conversations.SampleApi/`
+- **Email**: `samples/Abdul.Brevo.Email.SampleApi/`
 
-1. Update the `BrevoConversations:ApiKey` in `samples/Abdul.Brevo.Conversations.SampleApi/appsettings.json`.
-2. Navigate to the sample directory:
+To run a sample:
+
+1. Update the API key in the sample's `appsettings.json`.
+2. Run:
    ```bash
-   cd samples/Abdul.Brevo.Conversations.SampleApi
+   dotnet run --project samples/Abdul.Brevo.Email.SampleApi
    ```
-3. Run the application:
-   ```bash
-   dotnet run
-   ```
-4. Open the OpenAPI (Swagger) UI to test the endpoints.
+3. Open the OpenAPI (Swagger) UI to test the endpoints.
+
+## Project Structure
+
+```
+├── src/
+│   ├── Abdul.Brevo.Conversations/     # Conversations SDK
+│   └── Abdul.Brevo.Email/             # Transactional Email SDK
+├── samples/
+│   ├── Abdul.Brevo.Conversations.SampleApi/
+│   └── Abdul.Brevo.Email.SampleApi/
+├── tests/
+│   ├── Abdul.Brevo.Conversations.Tests/
+│   └── Abdul.Brevo.Email.Tests/
+├── Directory.Build.props              # Shared version & metadata
+├── Directory.Packages.props           # Central NuGet package management
+└── Abdul.Brevo.slnx                   # Solution file
+```
 
 ## License
 

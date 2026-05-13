@@ -7,15 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Abdul.Brevo.Conversations.Tests" />
+    <InternalsVisibleTo Include="Abdul.Brevo.Email.Tests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 
   <PropertyGroup>
-    <PackageId>Abdul.Brevo.Conversations</PackageId>
-    <Title>Abdul Brevo Conversations SDK for .NET</Title>
-    <Description>A lightweight .NET client for Brevo Conversations REST API and webhook payloads.</Description>
-    <PackageTags>brevo;conversations;chat;live-chat;dotnet;rest-api;sdk;webhooks;helpdesk</PackageTags>
+    <PackageId>Abdul.Brevo.Email</PackageId>
+    <Title>Abdul Brevo Email SDK for .NET</Title>
+    <Description>A lightweight .NET client for Brevo Transactional Email API v3.</Description>
+    <PackageTags>brevo;email;transactional;smtp;dotnet;rest-api;sdk</PackageTags>
     <PackageProjectUrl>https://github.com/AbdulIT/brevo-dotnet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/AbdulIT/brevo-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
