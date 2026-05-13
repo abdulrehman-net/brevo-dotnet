@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Nexin.Brevo.Conversations;
+namespace Abdul.Brevo.Conversations;
 
 public sealed class SetBrevoVisitorGroupRequest
 {

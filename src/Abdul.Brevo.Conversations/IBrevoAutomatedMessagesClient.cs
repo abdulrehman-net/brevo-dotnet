@@ -1,4 +1,4 @@
-namespace Nexin.Brevo.Conversations;
+namespace Abdul.Brevo.Conversations;
 
 public interface IBrevoAutomatedMessagesClient
 {

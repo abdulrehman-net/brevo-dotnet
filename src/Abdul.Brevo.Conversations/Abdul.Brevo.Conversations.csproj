@@ -4,15 +4,22 @@
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-    <PackageId>Nexin.Brevo.Conversations</PackageId>
-    <Title>Nexin Brevo Conversations SDK for .NET</Title>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Abdul.Brevo.Conversations.Tests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageId>Abdul.Brevo.Conversations</PackageId>
+    <Title>Abdul Brevo Conversations SDK for .NET</Title>
     <Description>A lightweight .NET client for Brevo Conversations REST API and webhook payloads.</Description>
-    <Authors>NexinIT</Authors>
-    <Company>NexinIT</Company>
+    <Authors>AbdulIT</Authors>
+    <Company>AbdulIT</Company>
     <PackageTags>brevo;conversations;chat;live-chat;dotnet;rest-api;sdk;webhooks;helpdesk</PackageTags>
-    <PackageProjectUrl>https://github.com/NexinIT/brevo-conversations-dotnet</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/NexinIT/brevo-conversations-dotnet</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/AbdulIT/brevo-conversations-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/AbdulIT/brevo-conversations-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>

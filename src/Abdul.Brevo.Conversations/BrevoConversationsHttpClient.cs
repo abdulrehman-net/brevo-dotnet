@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 
-namespace Nexin.Brevo.Conversations;
+namespace Abdul.Brevo.Conversations;
 
 internal sealed class BrevoConversationsHttpClient
 {

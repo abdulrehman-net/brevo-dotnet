@@ -1,4 +1,4 @@
-# Nexin.Brevo.Conversations
+# Abdul.Brevo.Conversations
 
 A lightweight .NET SDK for Brevo Conversations REST API and webhook payloads.
 
@@ -19,7 +19,7 @@ Built for developers who want simple, dependency-injection friendly access to Br
 ## Installation
 
 ```bash
-dotnet add package Nexin.Brevo.Conversations
+dotnet add package Abdul.Brevo.Conversations
 ```
 
 ## Quick Start
@@ -51,9 +51,9 @@ public class SupportMessageService
         {
             VisitorId = visitorId,
             Text = message,
-            AgentEmail = "support@nexinit.com",
-            AgentName = "Nexin Support",
-            ReceivedFrom = "NexinHelpdesk"
+            AgentEmail = "support@Abdulit.com",
+            AgentName = "Abdul Support",
+            ReceivedFrom = "AbdulHelpdesk"
         });
     }
 }

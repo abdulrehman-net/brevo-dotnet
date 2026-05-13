@@ -1,11 +1,11 @@
 <Solution>
   <Folder Name="/samples/">
-    <Project Path="samples/Nexin.Brevo.Conversations.SampleApi/Nexin.Brevo.Conversations.SampleApi.csproj" />
+    <Project Path="samples/Abdul.Brevo.Conversations.SampleApi/Abdul.Brevo.Conversations.SampleApi.csproj" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/Nexin.Brevo.Conversations/Nexin.Brevo.Conversations.csproj" />
+    <Project Path="src/Abdul.Brevo.Conversations/Abdul.Brevo.Conversations.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Nexin.Brevo.Conversations.Tests/Nexin.Brevo.Conversations.Tests.csproj" />
+    <Project Path="tests/Abdul.Brevo.Conversations.Tests/Abdul.Brevo.Conversations.Tests.csproj" />
   </Folder>
 </Solution>

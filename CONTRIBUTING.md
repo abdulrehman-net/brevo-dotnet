@@ -1,6 +1,6 @@
 # Contributing
 
-We welcome contributions to the `Nexin.Brevo.Conversations` project! Please open issues for any bugs or feature requests, and submit pull requests with your proposed changes.
+We welcome contributions to the `Abdul.Brevo.Conversations` project! Please open issues for any bugs or feature requests, and submit pull requests with your proposed changes.
 
 When contributing, ensure:
 1. Code follows standard C# conventions.

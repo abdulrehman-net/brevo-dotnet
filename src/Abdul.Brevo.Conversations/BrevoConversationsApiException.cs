@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Nexin.Brevo.Conversations;
+namespace Abdul.Brevo.Conversations;
 
 public sealed class BrevoConversationsApiException : Exception
 {

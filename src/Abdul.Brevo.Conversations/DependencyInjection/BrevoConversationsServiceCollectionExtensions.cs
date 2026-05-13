@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Nexin.Brevo.Conversations;
+namespace Abdul.Brevo.Conversations;
 
 public static class BrevoConversationsServiceCollectionExtensions
 {
