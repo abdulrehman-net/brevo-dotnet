@@ -4,6 +4,10 @@
     <ProjectReference Include="..\..\src\Abdul.Brevo.Core\Abdul.Brevo.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
