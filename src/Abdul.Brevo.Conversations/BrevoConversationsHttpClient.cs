@@ -1,138 +1,40 @@
 using System.Net;
-using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using Abdul.Brevo.Abstractions.Exceptions;
+using Abdul.Brevo.Abstractions.Http;
+using Abdul.Brevo.Abstractions.RateLimiting;
 using Microsoft.Extensions.Options;
 
 namespace Abdul.Brevo.Conversations;
 
-internal sealed class BrevoConversationsHttpClient
+/// <summary>
+/// Internal typed HttpClient wrapper for making authenticated requests
+/// to the Brevo Conversations API. Overrides error handling to raise
+/// domain-specific exceptions.
+/// </summary>
+internal sealed class BrevoConversationsHttpClient : BrevoHttpClientBase
 {
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-    };
-
-    private readonly HttpClient _httpClient;
-    private readonly BrevoConversationsOptions _options;
-
     public BrevoConversationsHttpClient(
         HttpClient httpClient,
         IOptions<BrevoConversationsOptions> options)
+        : base(httpClient, options.Value)
     {
-        _httpClient = httpClient;
-        _options = options.Value;
     }
 
-    public Task<TResponse> GetAsync<TResponse>(
-        string path,
-        CancellationToken cancellationToken = default)
-    {
-        return SendAsync<object, TResponse>(
-            HttpMethod.Get,
-            path,
-            body: null,
-            cancellationToken);
-    }
-
-    public Task<TResponse> PostAsync<TRequest, TResponse>(
-        string path,
-        TRequest body,
-        CancellationToken cancellationToken = default)
-    {
-        return SendAsync<TRequest, TResponse>(
-            HttpMethod.Post,
-            path,
-            body,
-            cancellationToken);
-    }
-
-    public Task<TResponse> PutAsync<TRequest, TResponse>(
-        string path,
-        TRequest body,
-        CancellationToken cancellationToken = default)
-    {
-        return SendAsync<TRequest, TResponse>(
-            HttpMethod.Put,
-            path,
-            body,
-            cancellationToken);
-    }
-
-    public async Task PostNoContentAsync<TRequest>(
-        string path,
-        TRequest body,
-        CancellationToken cancellationToken = default)
-    {
-        using var request = CreateRequest(HttpMethod.Post, path);
-        request.Content = JsonContent.Create(body, options: JsonOptions);
-
-        using var response = await _httpClient.SendAsync(request, cancellationToken);
-        var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        await ThrowIfFailedAsync(response, responseBody);
-    }
-
-    public async Task DeleteAsync(
-        string path,
-        CancellationToken cancellationToken = default)
-    {
-        using var request = CreateRequest(HttpMethod.Delete, path);
-
-        using var response = await _httpClient.SendAsync(request, cancellationToken);
-        var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        await ThrowIfFailedAsync(response, responseBody);
-    }
-
-    private async Task<TResponse> SendAsync<TRequest, TResponse>(
-        HttpMethod method,
-        string path,
-        TRequest? body,
-        CancellationToken cancellationToken)
-    {
-        using var request = CreateRequest(method, path);
-
-        if (body is not null)
-            request.Content = JsonContent.Create(body, options: JsonOptions);
-
-        using var response = await _httpClient.SendAsync(request, cancellationToken);
-        var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        await ThrowIfFailedAsync(response, responseBody);
-
-        var result = JsonSerializer.Deserialize<TResponse>(responseBody, JsonOptions);
-
-        return result
-               ?? throw new BrevoConversationsApiException(
-                   statusCode: (int)response.StatusCode,
-                   reasonPhrase: response.ReasonPhrase,
-                   message: "Brevo returned an empty or invalid response body.",
-                   responseBody: responseBody);
-    }
-
-    private static Task ThrowIfFailedAsync(
+    /// <inheritdoc />
+    protected override Task ThrowIfFailedAsync(
         HttpResponseMessage response,
         string responseBody)
     {
-        if (response.IsSuccessStatusCode)
-            return Task.CompletedTask;
-
-        BrevoErrorResponse? brevoError = null;
-
-        try
-        {
-            brevoError = JsonSerializer.Deserialize<BrevoErrorResponse>(
-                responseBody,
-                JsonOptions);
-        }
-        catch
-        {
-            // Ignore invalid/non-JSON error bodies.
-        }
-
         if (response.StatusCode == HttpStatusCode.PaymentRequired)
         {
+            BrevoErrorResponse? brevoError = null;
+            try
+            {
+                brevoError = JsonSerializer.Deserialize<BrevoErrorResponse>(responseBody, JsonOptions);
+            }
+            catch { }
+
             throw new BrevoConversationsPaymentRequiredException(
                 message: brevoError?.Message
                          ?? "Brevo returned 402 Payment Required. The Conversations REST API may require a paid plan, enabled feature access, or available credits.",
@@ -140,22 +42,24 @@ internal sealed class BrevoConversationsHttpClient
                 responseBody: responseBody);
         }
 
-        throw new BrevoConversationsApiException(
-            statusCode: (int)response.StatusCode,
-            reasonPhrase: response.ReasonPhrase,
-            message: brevoError?.Message
-                     ?? $"Brevo Conversations API request failed with status code {(int)response.StatusCode}.",
-            responseBody: responseBody);
+        return base.ThrowIfFailedAsync(response, responseBody);
     }
 
-    private HttpRequestMessage CreateRequest(HttpMethod method, string path)
+    /// <inheritdoc />
+    protected override BrevoApiException CreateApiException(
+        int statusCode,
+        string? reasonPhrase,
+        string message,
+        string? responseBody,
+        string? brevoCode,
+        string? brevoMessage)
     {
-        var request = new HttpRequestMessage(method, path);
-
-        request.Headers.Add("api-key", _options.ApiKey);
-        request.Headers.Accept.ParseAdd("application/json");
-
-        return request;
+        return new BrevoConversationsApiException(
+            statusCode,
+            reasonPhrase,
+            message,
+            responseBody,
+            brevoCode,
+            brevoMessage);
     }
 }
-

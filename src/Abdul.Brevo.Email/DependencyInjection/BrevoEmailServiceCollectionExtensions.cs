@@ -1,6 +1,6 @@
+using Abdul.Brevo.Abstractions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Abdul.Brevo.Email;
 
@@ -10,20 +10,17 @@ namespace Abdul.Brevo.Email;
 public static class BrevoEmailServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds the Brevo Email SDK services, binding options from the <c>BrevoEmail</c> configuration section.
+    /// Adds the Brevo Email SDK services, binding options from the <c>Brevo</c> configuration section.
     /// </summary>
     public static IServiceCollection AddBrevoEmail(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services
-            .AddOptions<BrevoEmailOptions>()
-            .Bind(configuration.GetSection(BrevoEmailOptions.SectionName))
-            .Validate(options => !string.IsNullOrWhiteSpace(options.ApiKey),
-                "Brevo Email API key is required.")
-            .ValidateOnStart();
+        services.AddBrevoHttpClient<BrevoEmailOptions, BrevoEmailHttpClient>(
+            configuration,
+            BrevoEmailOptions.SectionName);
 
-        return services.AddBrevoEmailCore();
+        return services.AddBrevoEmailClients();
     }
 
     /// <summary>
@@ -33,27 +30,14 @@ public static class BrevoEmailServiceCollectionExtensions
         this IServiceCollection services,
         Action<BrevoEmailOptions> configure)
     {
-        services
-            .AddOptions<BrevoEmailOptions>()
-            .Configure(configure)
-            .Validate(options => !string.IsNullOrWhiteSpace(options.ApiKey),
-                "Brevo Email API key is required.")
-            .ValidateOnStart();
+        services.AddBrevoHttpClient<BrevoEmailOptions, BrevoEmailHttpClient>(configure);
 
-        return services.AddBrevoEmailCore();
+        return services.AddBrevoEmailClients();
     }
 
-    private static IServiceCollection AddBrevoEmailCore(
+    private static IServiceCollection AddBrevoEmailClients(
         this IServiceCollection services)
     {
-        services.AddHttpClient<BrevoEmailHttpClient>((sp, client) =>
-        {
-            var options = sp.GetRequiredService<IOptions<BrevoEmailOptions>>().Value;
-
-            client.BaseAddress = new Uri(options.BaseUrl);
-            client.Timeout = options.Timeout;
-        });
-
         services.AddScoped<IBrevoTransactionalEmailClient, BrevoTransactionalEmailClient>();
         services.AddScoped<IBrevoScheduledEmailClient, BrevoScheduledEmailClient>();
         services.AddScoped<IBrevoHardBounceClient, BrevoHardBounceClient>();

@@ -11,7 +11,7 @@ public sealed class BrevoConversationsPaymentRequiredException
     /// <summary>
     /// Gets the Brevo-specific error code (e.g. <c>not_enough_credits</c>).
     /// </summary>
-    public string? BrevoCode { get; }
+    public new string? BrevoCode => base.BrevoCode;
 
     public BrevoConversationsPaymentRequiredException(
         string message,
@@ -21,8 +21,8 @@ public sealed class BrevoConversationsPaymentRequiredException
             statusCode: 402,
             reasonPhrase: "PaymentRequired",
             message: message,
-            responseBody: responseBody)
+            responseBody: responseBody,
+            brevoCode: brevoCode)
     {
-        BrevoCode = brevoCode;
     }
 }

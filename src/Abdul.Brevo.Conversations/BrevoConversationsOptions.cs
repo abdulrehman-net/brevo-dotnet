@@ -1,12 +1,14 @@
+using Abdul.Brevo.Abstractions;
+
 namespace Abdul.Brevo.Conversations;
 
-public sealed class BrevoConversationsOptions
+/// <summary>
+/// Configuration options for the Brevo Conversations SDK.
+/// </summary>
+public sealed class BrevoConversationsOptions : BrevoOptionsBase
 {
-    public const string SectionName = "BrevoConversations";
-
-    public string BaseUrl { get; set; } = "https://api.brevo.com";
-
-    public string ApiKey { get; set; } = string.Empty;
-
-    public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(30);
+    /// <summary>
+    /// The configuration section name used when binding from <c>IConfiguration</c>.
+    /// </summary>
+    public const string SectionName = "Brevo";
 }

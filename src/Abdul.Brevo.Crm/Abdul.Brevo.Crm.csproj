@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Abdul.Brevo.Crm.Tests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageId>Abdul.Brevo.Crm</PackageId>
+    <Title>Abdul Brevo Sales CRM SDK for .NET</Title>
+    <Description>A lightweight .NET client for Brevo Sales CRM API v3 (Companies, Deals, Tasks, Notes, etc.).</Description>
+    <PackageTags>brevo;crm;sales;deals;companies;tasks;dotnet;rest-api;sdk</PackageTags>
+    <PackageProjectUrl>https://github.com/AbdulIT/brevo-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/AbdulIT/brevo-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;NU1510</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abdul.Brevo.Abstractions\Abdul.Brevo.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+
+</Project>

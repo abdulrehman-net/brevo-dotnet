@@ -15,8 +15,8 @@ public class BrevoConversationsServiceCollectionExtensionsTests
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                { "BrevoConversations:ApiKey", "test-key" },
-                { "BrevoConversations:BaseUrl", "https://api.test.com" }
+                { "Brevo:ApiKey", "test-key" },
+                { "Brevo:BaseUrl", "https://api.test.com" }
             })
             .Build();
 
