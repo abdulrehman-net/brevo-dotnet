@@ -1,46 +1,30 @@
 using System.Net;
+using Abdul.Brevo.Abstractions.Exceptions;
 
 namespace Abdul.Brevo.Crm;
 
 /// <summary>
 /// Represents an error returned by the Brevo Sales CRM API.
 /// </summary>
-public sealed class BrevoCrmApiException : Exception
+public sealed class BrevoCrmApiException : BrevoApiException
 {
-    /// <summary>
-    /// The HTTP status code returned by the API.
-    /// </summary>
-    public HttpStatusCode StatusCode { get; }
-
-    /// <summary>
-    /// The raw response body returned by the API, if available.
-    /// </summary>
-    public string? ResponseBody { get; }
-
     public BrevoCrmApiException(
         HttpStatusCode statusCode,
-        string? responseBody)
-        : base(GetErrorMessage(statusCode, responseBody))
+        string? responseBody,
+        string? brevoCode = null,
+        string? brevoMessage = null)
+        : base(statusCode, responseBody, brevoCode, brevoMessage)
     {
-        StatusCode = statusCode;
-        ResponseBody = responseBody;
     }
 
-    private static string GetErrorMessage(HttpStatusCode statusCode, string? responseBody)
+    public BrevoCrmApiException(
+        int statusCode,
+        string? reasonPhrase,
+        string message,
+        string? responseBody,
+        string? brevoCode = null,
+        string? brevoMessage = null)
+        : base(statusCode, reasonPhrase, message, responseBody, brevoCode, brevoMessage)
     {
-        var baseMessage = $"Brevo CRM API request failed with status code {(int)statusCode} ({statusCode}).";
-
-        var hint = statusCode switch
-        {
-            HttpStatusCode.Unauthorized => " Check that your API key is valid and configured correctly.",
-            HttpStatusCode.Forbidden => " Check that your IP address is authorized in your Brevo account settings.",
-            HttpStatusCode.NotFound => " The requested resource was not found.",
-            HttpStatusCode.TooManyRequests => " Rate limit exceeded. Please wait before making more requests.",
-            _ => string.Empty
-        };
-
-        return !string.IsNullOrWhiteSpace(responseBody)
-            ? $"{baseMessage}{hint} Response: {responseBody}"
-            : $"{baseMessage}{hint}";
     }
 }

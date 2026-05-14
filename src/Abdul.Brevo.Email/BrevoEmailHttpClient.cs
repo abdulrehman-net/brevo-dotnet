@@ -1,6 +1,5 @@
-using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Abdul.Brevo.Abstractions.Exceptions;
+using Abdul.Brevo.Abstractions.Http;
 using Microsoft.Extensions.Options;
 
 namespace Abdul.Brevo.Email;
@@ -8,109 +7,30 @@ namespace Abdul.Brevo.Email;
 /// <summary>
 /// Internal typed HttpClient wrapper for making authenticated requests to the Brevo Email API.
 /// </summary>
-internal sealed class BrevoEmailHttpClient
+internal sealed class BrevoEmailHttpClient : BrevoHttpClientBase
 {
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-    };
-
-    private readonly HttpClient _httpClient;
-    private readonly BrevoEmailOptions _options;
-
     public BrevoEmailHttpClient(
         HttpClient httpClient,
         IOptions<BrevoEmailOptions> options)
+        : base(httpClient, options.Value)
     {
-        _httpClient = httpClient;
-        _options = options.Value;
     }
 
-    public Task<TResponse> GetAsync<TResponse>(
-        string path,
-        CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    protected override BrevoApiException CreateApiException(
+        int statusCode,
+        string? reasonPhrase,
+        string message,
+        string? responseBody,
+        string? brevoCode,
+        string? brevoMessage)
     {
-        return SendAsync<object, TResponse>(
-            HttpMethod.Get,
-            path,
-            body: null,
-            cancellationToken);
-    }
-
-    public Task<TResponse> PostAsync<TRequest, TResponse>(
-        string path,
-        TRequest body,
-        CancellationToken cancellationToken = default)
-    {
-        return SendAsync<TRequest, TResponse>(
-            HttpMethod.Post,
-            path,
-            body,
-            cancellationToken);
-    }
-
-    public async Task PostNoContentAsync<TRequest>(
-        string path,
-        TRequest body,
-        CancellationToken cancellationToken = default)
-    {
-        using var request = CreateRequest(HttpMethod.Post, path);
-        request.Content = JsonContent.Create(body, options: JsonOptions);
-
-        using var response = await _httpClient.SendAsync(request, cancellationToken);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-            throw new BrevoEmailApiException(response.StatusCode, responseBody);
-        }
-    }
-
-    public async Task DeleteAsync(
-        string path,
-        CancellationToken cancellationToken = default)
-    {
-        using var request = CreateRequest(HttpMethod.Delete, path);
-
-        using var response = await _httpClient.SendAsync(request, cancellationToken);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-            throw new BrevoEmailApiException(response.StatusCode, responseBody);
-        }
-    }
-
-    private async Task<TResponse> SendAsync<TRequest, TResponse>(
-        HttpMethod method,
-        string path,
-        TRequest? body,
-        CancellationToken cancellationToken)
-    {
-        using var request = CreateRequest(method, path);
-
-        if (body is not null)
-            request.Content = JsonContent.Create(body, options: JsonOptions);
-
-        using var response = await _httpClient.SendAsync(request, cancellationToken);
-
-        var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        if (!response.IsSuccessStatusCode)
-            throw new BrevoEmailApiException(response.StatusCode, responseBody);
-
-        var result = JsonSerializer.Deserialize<TResponse>(responseBody, JsonOptions);
-
-        return result ?? throw new BrevoEmailApiException(response.StatusCode, responseBody);
-    }
-
-    private HttpRequestMessage CreateRequest(HttpMethod method, string path)
-    {
-        var request = new HttpRequestMessage(method, path);
-
-        request.Headers.Add("api-key", _options.ApiKey);
-        request.Headers.Accept.ParseAdd("application/json");
-
-        return request;
+        return new BrevoEmailApiException(
+            statusCode,
+            reasonPhrase,
+            message,
+            responseBody,
+            brevoCode,
+            brevoMessage);
     }
 }

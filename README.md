@@ -4,6 +4,7 @@ A collection of lightweight .NET SDKs for Brevo APIs, built for developers who w
 
 | Package | NuGet | Description |
 |---------|-------|-------------|
+| **Abdul.Brevo.Abstractions** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Abstractions)](https://www.nuget.org/packages/Abdul.Brevo.Abstractions) | Shared foundational layer for all Brevo SDKs |
 | **Abdul.Brevo.Conversations** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Conversations)](https://www.nuget.org/packages/Abdul.Brevo.Conversations) | Brevo Conversations (live chat) REST API |
 | **Abdul.Brevo.Email** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Email)](https://www.nuget.org/packages/Abdul.Brevo.Email) | Brevo Transactional Email API v3 |
 | **Abdul.Brevo.Crm** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Crm)](https://www.nuget.org/packages/Abdul.Brevo.Crm) | Brevo Sales CRM API v3 |
@@ -36,6 +37,14 @@ A collection of lightweight .NET SDKs for Brevo APIs, built for developers who w
 - Upload, download, and manage CRM files
 - Create custom attributes for companies and deals
 - Flexible attribute system via Dictionary access
+
+### Abdul.Brevo.Abstractions
+- Shared HTTP plumbing and authentication
+- Rate-limit awareness and header parsing (`x-sib-ratelimit-*`)
+- Automatic 429 (Too Many Requests) detection with `RetryAfter` timing
+- Unified exception hierarchy with structured error parsing
+- Standard pagination primitives (`limit`/`offset`)
+- Shared dependency injection registration helpers
 
 ### Shared
 - ASP.NET Core dependency injection support
@@ -180,6 +189,7 @@ To run a sample:
 
 ```
 ├── src/
+│   ├── Abdul.Brevo.Abstractions/      # Shared foundation (HTTP, Exceptions, Pagination)
 │   ├── Abdul.Brevo.Conversations/     # Conversations SDK
 │   ├── Abdul.Brevo.Email/             # Transactional Email SDK
 │   └── Abdul.Brevo.Crm/               # Sales CRM SDK
@@ -188,6 +198,7 @@ To run a sample:
 │   ├── Abdul.Brevo.Email.SampleApi/
 │   └── Abdul.Brevo.Crm.SampleApi/
 ├── tests/
+│   ├── Abdul.Brevo.Abstractions.Tests/
 │   ├── Abdul.Brevo.Conversations.Tests/
 │   ├── Abdul.Brevo.Email.Tests/
 │   └── Abdul.Brevo.Crm.Tests/
@@ -224,9 +235,20 @@ try
 }
 catch (BrevoConversationsPaymentRequiredException ex)
 {
+    // Domain-specific 402 exception
     // ex.BrevoCode  → "not_enough_credits"
     // ex.Message    → "Upgrade your plan to use REST API"
-    // ex.StatusCode → 402
+}
+catch (BrevoRateLimitException ex)
+{
+    // Shared 429 exception
+    // ex.RetryAfter → Suggests wait duration (e.g. 5 seconds)
+}
+catch (BrevoApiException ex)
+{
+    // Base exception for all other errors (400, 401, 403, 404, 5xx)
+    // ex.StatusCode → 401
+    // ex.BrevoCode  → "unauthorized"
 }
 ```
 
