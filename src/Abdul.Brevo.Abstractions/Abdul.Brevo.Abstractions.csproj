@@ -16,8 +16,8 @@
     <Title>Abdul Brevo Abstractions for .NET</Title>
     <Description>Shared abstractions (options, exceptions, HTTP plumbing, pagination, rate-limit handling) for Abdul.Brevo.* SDK packages.</Description>
     <PackageTags>brevo;abstractions;sdk;dotnet;rest-api</PackageTags>
-    <PackageProjectUrl>https://github.com/AbdulIT/brevo-dotnet</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/AbdulIT/brevo-dotnet</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/abdulrehman-net/brevo-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/abdulrehman-net/brevo-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

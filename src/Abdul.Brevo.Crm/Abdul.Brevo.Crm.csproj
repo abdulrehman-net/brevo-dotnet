@@ -16,8 +16,8 @@
     <Title>Abdul Brevo Sales CRM SDK for .NET</Title>
     <Description>A lightweight .NET client for Brevo Sales CRM API v3 (Companies, Deals, Tasks, Notes, etc.).</Description>
     <PackageTags>brevo;crm;sales;deals;companies;tasks;dotnet;rest-api;sdk</PackageTags>
-    <PackageProjectUrl>https://github.com/AbdulIT/brevo-dotnet</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/AbdulIT/brevo-dotnet</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/abdulrehman-net/brevo-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/abdulrehman-net/brevo-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
