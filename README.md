@@ -5,11 +5,18 @@ A collection of lightweight .NET SDKs for Brevo APIs, built for developers who w
 | Package | NuGet | Description |
 |---------|-------|-------------|
 | **Abdul.Brevo.Abstractions** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Abstractions)](https://www.nuget.org/packages/Abdul.Brevo.Abstractions) | Shared foundational layer for all Brevo SDKs |
+| **Abdul.Brevo.Core** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Core)](https://www.nuget.org/packages/Abdul.Brevo.Core) | Brevo Contacts, Lists, Folders, and Webhooks |
 | **Abdul.Brevo.Conversations** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Conversations)](https://www.nuget.org/packages/Abdul.Brevo.Conversations) | Brevo Conversations (live chat) REST API |
 | **Abdul.Brevo.Email** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Email)](https://www.nuget.org/packages/Abdul.Brevo.Email) | Brevo Transactional Email API v3 |
 | **Abdul.Brevo.Crm** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Crm)](https://www.nuget.org/packages/Abdul.Brevo.Crm) | Brevo Sales CRM API v3 |
 
 ## Features
+
+### Abdul.Brevo.Core
+- Retrieve account details and plan limits
+- Manage contacts (Create, Update, Delete, Import, Export, DOI)
+- Organize contacts with folders and lists
+- Manage marketing and transactional webhooks
 
 ### Abdul.Brevo.Conversations
 - Send messages as an agent
@@ -55,6 +62,9 @@ A collection of lightweight .NET SDKs for Brevo APIs, built for developers who w
 ## Installation
 
 ```bash
+# Core SDK
+dotnet add package Abdul.Brevo.Core
+
 # Conversations SDK
 dotnet add package Abdul.Brevo.Conversations
 
@@ -172,6 +182,7 @@ public class DealService
 
 Complete sample ASP.NET Core Minimal APIs are available:
 
+- **Core**: `samples/Abdul.Brevo.Core.SampleApi/`
 - **Conversations**: `samples/Abdul.Brevo.Conversations.SampleApi/`
 - **Email**: `samples/Abdul.Brevo.Email.SampleApi/`
 - **CRM**: `samples/Abdul.Brevo.Crm.SampleApi/`
@@ -190,15 +201,18 @@ To run a sample:
 ```
 ├── src/
 │   ├── Abdul.Brevo.Abstractions/      # Shared foundation (HTTP, Exceptions, Pagination)
+│   ├── Abdul.Brevo.Core/              # Contacts, Lists, Folders, Webhooks SDK
 │   ├── Abdul.Brevo.Conversations/     # Conversations SDK
 │   ├── Abdul.Brevo.Email/             # Transactional Email SDK
 │   └── Abdul.Brevo.Crm/               # Sales CRM SDK
 ├── samples/
+│   ├── Abdul.Brevo.Core.SampleApi/
 │   ├── Abdul.Brevo.Conversations.SampleApi/
 │   ├── Abdul.Brevo.Email.SampleApi/
 │   └── Abdul.Brevo.Crm.SampleApi/
 ├── tests/
 │   ├── Abdul.Brevo.Abstractions.Tests/
+│   ├── Abdul.Brevo.Core.Tests/
 │   ├── Abdul.Brevo.Conversations.Tests/
 │   ├── Abdul.Brevo.Email.Tests/
 │   └── Abdul.Brevo.Crm.Tests/

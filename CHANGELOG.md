@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.0-alpha] - 2026-05-14
 
 ### Added
+- **Abdul.Brevo.Core**: New SDK covering Contacts, Lists, Folders, Webhooks, and Account API endpoints.
 - **Abdul.Brevo.Abstractions**: New foundational package for shared SDK logic.
 - Automated rate-limit header parsing and `BrevoRateLimitException` (429 handling).
 - Shared pagination primitives for `limit` and `offset` based endpoints.
