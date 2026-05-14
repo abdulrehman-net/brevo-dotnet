@@ -22,6 +22,12 @@ jobs:
       id: version
       run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
+    - name: Pack Abdul.Brevo.Abstractions
+      run: dotnet pack src/Abdul.Brevo.Abstractions/Abdul.Brevo.Abstractions.csproj --configuration Release -p:Version=${{ steps.version.outputs.VERSION }} -o ./artifacts
+
+    - name: Pack Abdul.Brevo.Core
+      run: dotnet pack src/Abdul.Brevo.Core/Abdul.Brevo.Core.csproj --configuration Release -p:Version=${{ steps.version.outputs.VERSION }} -o ./artifacts
+
     - name: Pack Abdul.Brevo.Conversations
       run: dotnet pack src/Abdul.Brevo.Conversations/Abdul.Brevo.Conversations.csproj --configuration Release -p:Version=${{ steps.version.outputs.VERSION }} -o ./artifacts
 
