@@ -8,7 +8,7 @@ public sealed class BrevoCrmOptions
     /// <summary>
     /// The configuration section name used when binding from <c>IConfiguration</c>.
     /// </summary>
-    public const string SectionName = "BrevoCrm";
+    public const string SectionName = "Brevo";
 
     /// <summary>
     /// Base URL for the Brevo API. Defaults to <c>https://api.brevo.com</c>.

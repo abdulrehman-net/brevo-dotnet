@@ -2,7 +2,7 @@ namespace Abdul.Brevo.Conversations;
 
 public sealed class BrevoConversationsOptions
 {
-    public const string SectionName = "BrevoConversations";
+    public const string SectionName = "Brevo";
 
     public string BaseUrl { get; set; } = "https://api.brevo.com";
 

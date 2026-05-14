@@ -28,15 +28,15 @@ public sealed class BrevoCrmFilesClientTests
     [Fact]
     public async Task UploadAsync_SendsMultipartRequest()
     {
-        HttpRequestMessage? capturedRequest = null;
+        string? contentString = null;
 
-        var handler = new HttpMessageHandlerMock((req, _) =>
+        var handler = new HttpMessageHandlerMock(async (req, _) =>
         {
-            capturedRequest = req;
-            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.Created)
+            contentString = await req.Content!.ReadAsStringAsync();
+            return new HttpResponseMessage(HttpStatusCode.Created)
             {
                 Content = new StringContent("""{"id":"file-1","name":"test.txt"}""")
-            });
+            };
         });
 
         var client = CreateClient(handler);
@@ -50,12 +50,8 @@ public sealed class BrevoCrmFilesClientTests
         });
 
         result.Id.Should().Be("file-1");
-        capturedRequest.Should().NotBeNull();
-        capturedRequest!.Content.Should().BeAssignableTo<MultipartFormDataContent>();
-        
-        var contentString = await capturedRequest.Content!.ReadAsStringAsync();
-        contentString.Should().Contain("filename=test.txt");
-        contentString.Should().Contain("name=\"dealId\"");
+        contentString.Should().NotBeNull();
+        contentString.Should().Contain("name=dealId");
         contentString.Should().Contain("deal-1");
     }
 

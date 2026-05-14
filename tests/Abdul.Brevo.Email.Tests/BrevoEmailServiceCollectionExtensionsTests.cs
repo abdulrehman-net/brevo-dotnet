@@ -13,7 +13,7 @@ public sealed class BrevoEmailServiceCollectionExtensionsTests
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["BrevoEmail:ApiKey"] = "test-key"
+                ["Brevo:ApiKey"] = "test-key"
             })
             .Build();
 
@@ -49,8 +49,8 @@ public sealed class BrevoEmailServiceCollectionExtensionsTests
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["BrevoEmail:ApiKey"] = "my-api-key",
-                ["BrevoEmail:BaseUrl"] = "https://custom.api.com"
+                ["Brevo:ApiKey"] = "my-api-key",
+                ["Brevo:BaseUrl"] = "https://custom.api.com"
             })
             .Build();
 

@@ -13,7 +13,7 @@ public sealed class BrevoCrmServiceCollectionExtensionsTests
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["BrevoCrm:ApiKey"] = "test-key"
+                ["Brevo:ApiKey"] = "test-key"
             })
             .Build();
 
