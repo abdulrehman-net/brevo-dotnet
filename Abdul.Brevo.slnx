@@ -1,14 +1,17 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="src/Abdul.Brevo.Conversations/Abdul.Brevo.Conversations.csproj" />
-    <Project Path="src/Abdul.Brevo.Email/Abdul.Brevo.Email.csproj" />
+  <Folder Name="src">
+    <Project Path="src\Abdul.Brevo.Conversations\Abdul.Brevo.Conversations.csproj" />
+    <Project Path="src\Abdul.Brevo.Email\Abdul.Brevo.Email.csproj" />
+    <Project Path="src\Abdul.Brevo.Crm\Abdul.Brevo.Crm.csproj" />
   </Folder>
-  <Folder Name="/samples/">
-    <Project Path="samples/Abdul.Brevo.Conversations.SampleApi/Abdul.Brevo.Conversations.SampleApi.csproj" />
-    <Project Path="samples/Abdul.Brevo.Email.SampleApi/Abdul.Brevo.Email.SampleApi.csproj" />
+  <Folder Name="samples">
+    <Project Path="samples\Abdul.Brevo.Conversations.SampleApi\Abdul.Brevo.Conversations.SampleApi.csproj" />
+    <Project Path="samples\Abdul.Brevo.Email.SampleApi\Abdul.Brevo.Email.SampleApi.csproj" />
+    <Project Path="samples\Abdul.Brevo.Crm.SampleApi\Abdul.Brevo.Crm.SampleApi.csproj" />
   </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/Abdul.Brevo.Conversations.Tests/Abdul.Brevo.Conversations.Tests.csproj" />
-    <Project Path="tests/Abdul.Brevo.Email.Tests/Abdul.Brevo.Email.Tests.csproj" />
+  <Folder Name="tests">
+    <Project Path="tests\Abdul.Brevo.Conversations.Tests\Abdul.Brevo.Conversations.Tests.csproj" />
+    <Project Path="tests\Abdul.Brevo.Email.Tests\Abdul.Brevo.Email.Tests.csproj" />
+    <Project Path="tests\Abdul.Brevo.Crm.Tests\Abdul.Brevo.Crm.Tests.csproj" />
   </Folder>
 </Solution>

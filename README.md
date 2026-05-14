@@ -6,6 +6,7 @@ A collection of lightweight .NET SDKs for Brevo APIs, built for developers who w
 |---------|-------|-------------|
 | **Abdul.Brevo.Conversations** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Conversations)](https://www.nuget.org/packages/Abdul.Brevo.Conversations) | Brevo Conversations (live chat) REST API |
 | **Abdul.Brevo.Email** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Email)](https://www.nuget.org/packages/Abdul.Brevo.Email) | Brevo Transactional Email API v3 |
+| **Abdul.Brevo.Crm** | [![NuGet](https://img.shields.io/nuget/v/Abdul.Brevo.Crm)](https://www.nuget.org/packages/Abdul.Brevo.Crm) | Brevo Sales CRM API v3 |
 
 ## Features
 
@@ -27,6 +28,15 @@ A collection of lightweight .NET SDKs for Brevo APIs, built for developers who w
 - Delete hard bounces
 - Strongly typed webhook payload models
 
+### Abdul.Brevo.Crm
+- Manage companies and their attributes
+- Manage deals, pipelines, and stages
+- Create, list, and complete CRM tasks
+- Create and retrieve notes associated with entities
+- Upload, download, and manage CRM files
+- Create custom attributes for companies and deals
+- Flexible attribute system via Dictionary access
+
 ### Shared
 - ASP.NET Core dependency injection support
 - .NET 8 and .NET 10 support
@@ -41,6 +51,9 @@ dotnet add package Abdul.Brevo.Conversations
 
 # Email SDK
 dotnet add package Abdul.Brevo.Email
+
+# CRM SDK
+dotnet add package Abdul.Brevo.Crm
 ```
 
 ## Quick Start
@@ -112,12 +125,47 @@ public class NotificationService
 }
 ```
 
+### CRM
+
+```csharp
+builder.Services.AddBrevoCrm(options =>
+{
+    options.ApiKey = builder.Configuration["Brevo:ApiKey"]!;
+});
+```
+
+```csharp
+public class DealService
+{
+    private readonly IBrevoCrmDealsClient _deals;
+
+    public DealService(IBrevoCrmDealsClient deals)
+    {
+        _deals = deals;
+    }
+
+    public async Task CreateDealAsync(string name, double amount)
+    {
+        await _deals.CreateAsync(new CreateDealRequest
+        {
+            Name = name,
+            Attributes = new Dictionary<string, object>
+            {
+                ["amount"] = amount,
+                ["deal_status"] = "open"
+            }
+        });
+    }
+}
+```
+
 ## Samples
 
 Complete sample ASP.NET Core Minimal APIs are available:
 
 - **Conversations**: `samples/Abdul.Brevo.Conversations.SampleApi/`
 - **Email**: `samples/Abdul.Brevo.Email.SampleApi/`
+- **CRM**: `samples/Abdul.Brevo.Crm.SampleApi/`
 
 To run a sample:
 
@@ -133,13 +181,16 @@ To run a sample:
 ```
 ├── src/
 │   ├── Abdul.Brevo.Conversations/     # Conversations SDK
-│   └── Abdul.Brevo.Email/             # Transactional Email SDK
+│   ├── Abdul.Brevo.Email/             # Transactional Email SDK
+│   └── Abdul.Brevo.Crm/               # Sales CRM SDK
 ├── samples/
 │   ├── Abdul.Brevo.Conversations.SampleApi/
-│   └── Abdul.Brevo.Email.SampleApi/
+│   ├── Abdul.Brevo.Email.SampleApi/
+│   └── Abdul.Brevo.Crm.SampleApi/
 ├── tests/
 │   ├── Abdul.Brevo.Conversations.Tests/
-│   └── Abdul.Brevo.Email.Tests/
+│   ├── Abdul.Brevo.Email.Tests/
+│   └── Abdul.Brevo.Crm.Tests/
 ├── Directory.Build.props              # Shared version & metadata
 ├── Directory.Packages.props           # Central NuGet package management
 └── Abdul.Brevo.slnx                   # Solution file

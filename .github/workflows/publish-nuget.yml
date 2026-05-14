@@ -27,6 +27,9 @@ jobs:
 
     - name: Pack Abdul.Brevo.Email
       run: dotnet pack src/Abdul.Brevo.Email/Abdul.Brevo.Email.csproj --configuration Release -p:Version=${{ steps.version.outputs.VERSION }} -o ./artifacts
+
+    - name: Pack Abdul.Brevo.Crm
+      run: dotnet pack src/Abdul.Brevo.Crm/Abdul.Brevo.Crm.csproj --configuration Release -p:Version=${{ steps.version.outputs.VERSION }} -o ./artifacts
       
     - name: Push to NuGet
       run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
