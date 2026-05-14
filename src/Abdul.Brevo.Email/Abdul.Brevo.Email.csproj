@@ -16,8 +16,8 @@
     <Title>Abdul Brevo Email SDK for .NET</Title>
     <Description>A lightweight .NET client for Brevo Transactional Email API v3.</Description>
     <PackageTags>brevo;email;transactional;smtp;dotnet;rest-api;sdk</PackageTags>
-    <PackageProjectUrl>https://github.com/AbdulIT/brevo-dotnet</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/AbdulIT/brevo-dotnet</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/abdulrehman-net/brevo-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/abdulrehman-net/brevo-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
